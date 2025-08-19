@@ -1,0 +1,33 @@
+# Data configuration for Maps + masks
+train:
+  images_dir: ./Maps
+  masks_dir: ./mask
+  # filename alignment: mask file is either <stem>_mask.png or identical name under masks_dir
+  mask_suffix: _mask
+  image_exts: [".png", ".jpg", ".jpeg"]
+  mask_exts: [".png"]
+  shuffle: true
+  val_split: 0.1
+
+model:
+  sam_variant: vit_b  # options: vit_b, vit_l, vit_h
+  checkpoint: ./weights/sam_vit_b_01ec64.pth  # provide during Vast run
+  lora:
+    rank: 8
+    alpha: 16
+    target_modules: ["attn.q_proj", "attn.k_proj", "attn.v_proj", "attn.proj"]
+
+train_params:
+  epochs: 20
+  batch_size: 1
+  lr: 5.0e-5
+  weight_decay: 0.0
+  warmup_steps: 500
+  save_every: 1
+  out_dir: ./outputs/sam_lora
+  num_workers: 4
+  amp: true
+
+inference:
+  threshold: 0.5
+  out_dir: ./outputs/preds
